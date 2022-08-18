@@ -109,13 +109,16 @@ class NRMSModel(BaseModel):
         )
 
         click_title_presents = layers.TimeDistributed(titleencoder)(his_input_title)
-        y = SelfAttention(hparams.head_num, hparams.head_dim, seed=self.seed)(
-            [click_title_presents] * 3
-        )
-        user_present = AttLayer2(hparams.attention_hidden_dim, seed=self.seed)(y)
+        self.embedder = keras.Model(his_input_title, click_title_presents, name="embedder")
 
-        model = keras.Model(his_input_title, user_present, name="user_encoder")
-        return model
+        embedding_input = keras.Input(shape=(hparams.his_size, titleencoder.output_shape[-1]), dtype="float32")
+        y = SelfAttention(hparams.head_num, hparams.head_dim, seed=self.seed)([embedding_input] * 3)
+        user_present = AttLayer2(hparams.attention_hidden_dim, seed=self.seed)(y)
+        self.rewuserencoder = keras.Model(embedding_input, user_present, name="raw_user_encoder")
+
+        self.rewuserencoder.compose(self.embedder)
+
+        return keras.Model(his_input_title, self.rewuserencoder(self.embedder(his_input_title)), name="user_encoder")
 
     def _build_newsencoder(self, embedding_layer):
         """The main function to create news encoder of NRMS.
