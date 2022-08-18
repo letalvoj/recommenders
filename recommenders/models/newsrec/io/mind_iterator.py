@@ -99,7 +99,7 @@ class MINDIterator(BaseIterator):
             title = news_title[news_index]
             for word_index in range(min(self.title_size, len(title))):
                 if title[word_index] in self.word_dict:
-                    self.news_title_index[news_index, word_index] = self.word_dict[
+                    news_title_index[news_index, word_index] = self.word_dict[
                         title[word_index].lower()
                     ]
         return news_title_index

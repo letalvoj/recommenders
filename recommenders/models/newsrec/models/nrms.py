@@ -116,8 +116,6 @@ class NRMSModel(BaseModel):
         user_present = AttLayer2(hparams.attention_hidden_dim, seed=self.seed)(y)
         self.rewuserencoder = keras.Model(embedding_input, user_present, name="raw_user_encoder")
 
-        self.rewuserencoder.compose(self.embedder)
-
         return keras.Model(his_input_title, self.rewuserencoder(self.embedder(his_input_title)), name="user_encoder")
 
     def _build_newsencoder(self, embedding_layer):
