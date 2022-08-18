@@ -118,9 +118,7 @@ class MINDIterator(BaseIterator):
                 uid, time, history, impr = line.strip("\n").split(self.col_spliter)[-4:]
 
                 history = [self.nid2index[i] for i in history.split()]
-                history = [0] * (self.his_size - len(history)) + history[
-                    : self.his_size
-                ]
+                history = [0] * (self.his_size - len(history)) + history[::-1][:self.his_size]
 
                 impr_news = [self.nid2index[i.split("-")[0]] for i in impr.split()]
                 label = [int(i.split("-")[1]) for i in impr.split()]
