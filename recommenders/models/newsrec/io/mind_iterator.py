@@ -88,7 +88,10 @@ class MINDIterator(BaseIterator):
                 title = word_tokenize(title)
                 news_title.append(title)
 
-        self.news_title_index = np.zeros(
+        self.news_title_index = self.embed(news_title)
+
+    def embed(self, news_title):
+        news_title_index = np.zeros(
             (len(news_title), self.title_size), dtype="int32"
         )
 
@@ -99,6 +102,7 @@ class MINDIterator(BaseIterator):
                     self.news_title_index[news_index, word_index] = self.word_dict[
                         title[word_index].lower()
                     ]
+        return news_title_index
 
     def init_behaviors(self, behaviors_file):
         """init behavior logs given behaviors file.
