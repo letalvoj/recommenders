@@ -2,6 +2,7 @@
 # Licensed under the MIT License.
 
 import abc
+import os
 import time
 import numpy as np
 from tqdm import tqdm
@@ -10,7 +11,9 @@ from tensorflow.compat.v1 import keras
 
 from recommenders.models.deeprec.deeprec_utils import cal_metric
 
-tf.compat.v1.disable_eager_execution()
+if os.environ.get('PRESERVE_EAGER_EXECUTION', '').lower() != 'true':
+    tf.compat.v1.disable_eager_execution()
+
 tf.compat.v1.experimental.output_all_intermediates(True)
 __all__ = ["BaseModel"]
 
